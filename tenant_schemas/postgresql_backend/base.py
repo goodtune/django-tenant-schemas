@@ -2,9 +2,11 @@ import re
 import warnings
 from django.conf import settings
 try:
-    from importlib import import_module
+    # Django versions >= 1.9
+    from django.utils.module_loading import import_module
 except ImportError:
-    from django.utils.importlib import import_module  # importlib support for python < 2.7
+    # Django versions < 1.9
+    from django.utils.importlib import import_module
 from django.core.exceptions import ImproperlyConfigured, ValidationError
 from tenant_schemas.utils import get_public_schema_name, get_limit_set_calls
 from tenant_schemas.postgresql_backend.introspection import DatabaseSchemaIntrospection
@@ -57,6 +59,11 @@ class DatabaseWrapper(original_backend.DatabaseWrapper):
     def close(self):
         self.search_path_set = False
         super(DatabaseWrapper, self).close()
+
+    def rollback(self):
+        super(DatabaseWrapper, self).rollback()
+        # Django's rollback clears the search path so we have to set it again the next time.
+        self.search_path_set = False
 
     def set_tenant(self, tenant, include_public=True):
         """
