@@ -19,7 +19,7 @@ class TenantMiddleware(object):
         """ Extracts hostname from request. Used for custom requests filtering.
             By default removes the request's port and common prefixes.
         """
-        return remove_www(request.get_host().split(':')[0]).lower()
+        return remove_www(request.get_host().split(':')[0])
 
     def process_request(self, request):
         # Connection needs first to be at the public schema, as this is where
@@ -29,7 +29,7 @@ class TenantMiddleware(object):
 
         TenantModel = get_tenant_model()
         try:
-            request.tenant = TenantModel.objects.get(domain_url=hostname)
+            request.tenant = TenantModel.objects.get(domain_url__iexact=hostname)
             connection.set_tenant(request.tenant)
         except TenantModel.DoesNotExist:
             raise self.TENANT_NOT_FOUND_EXCEPTION(
