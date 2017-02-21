@@ -2,12 +2,20 @@ language: python
 python:
 - 2.7
 - 3.5
+- 3.5-dev
+- 3.6-dev
+- nightly
 services:
 - postgresql
 addons:
   postgresql: '9.4'
 install:
 - pip install tox
+matrix:
+  allow_failures:
+    - python: 3.5-dev
+    - python: 3.6-dev
+    - python: nightly
 before_script:
 - psql -c "CREATE DATABASE dts_test_project;" -U postgres
 script:
