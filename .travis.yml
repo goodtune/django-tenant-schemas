@@ -6,7 +6,7 @@ python:
   - 3.7
 
 matrix:
-  exclude:
+  include:
     - python: 2.7
       env: DJANGO=1.11
   fast_finish: true
