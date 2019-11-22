@@ -33,7 +33,7 @@ setup(
         "Topic :: Database",
         "Topic :: Software Development :: Libraries",
     ],
-    install_requires=["Django>=2.0", "ordered-set", "psycopg2",],
+    install_requires=["Django>=1.11", "ordered-set", "psycopg2-binary", "six"],
     setup_requires=["setuptools-scm"],
     use_scm_version=True,
     zip_safe=False,

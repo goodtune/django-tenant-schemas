@@ -12,20 +12,20 @@ from tenant_schemas.postgresql_backend.base import FakeTenant
 
 
 class CachedLoader(cached.Loader):
-    def cache_key(self, template_name, skip=None):
-        key = super().cache_key(template_name, skip)
+    def cache_key(self, *args, **kwargs):
+        key = super(CachedLoader, self).cache_key(*args, **kwargs)
 
         if not connection.tenant or isinstance(connection.tenant, FakeTenant):
             return key
 
-        return "-".join([connection.tenant.domain_url, key])
+        return "-".join([connection.tenant.pk, key])
 
 
 class FilesystemLoader(filesystem.Loader):
     def get_dirs(self):
-        dirs = OrderedSet(super().get_dirs())
+        dirs = OrderedSet(super(FilesystemLoader, self).get_dirs())
 
-        if connection.tenant or not isinstance(connection.tenant, FakeTenant):
+        if connection.tenant and not isinstance(connection.tenant, FakeTenant):
             try:
                 template_dirs = settings.MULTITENANT_TEMPLATE_DIRS
             except AttributeError:
