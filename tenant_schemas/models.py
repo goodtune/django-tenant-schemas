@@ -53,6 +53,9 @@ class TenantMixin(models.Model):
     class Meta:
         abstract = True
 
+    def __str__(self):
+        return self.schema_name
+
     def save(self, verbosity=1, *args, **kwargs):
         is_new = self.pk is None
 
