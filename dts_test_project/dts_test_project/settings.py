@@ -1,17 +1,14 @@
 """
 Django settings for dts_test_project project.
-
-For more information on this file, see
-https://docs.djangoproject.com/en/1.8/topics/settings/
-
-For the full list of settings and their values, see
-https://docs.djangoproject.com/en/1.8/ref/settings/
 """
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-import os
+from pathlib import Path
 
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+import environ
+
+env = environ.Env()
+
+BASE_DIR = Path(__file__).parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
@@ -65,11 +62,11 @@ WSGI_APPLICATION = "dts_test_project.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "tenant_schemas.postgresql_backend",
-        "NAME": os.environ.get("PG_NAME", "dts_test_project"),
-        "USER": os.environ.get("PG_USER"),
-        "PASSWORD": os.environ.get("PG_PASSWORD"),
-        "HOST": os.environ.get("PG_HOST"),
-        "PORT": int(os.environ.get("PG_PORT")) if os.environ.get("PG_PORT") else None,
+        "NAME": env.str("PG_NAME", default="dts_test_project"),
+        "USER": env.str("PG_USER", default="dts_test_project"),
+        "PASSWORD": env.str("PG_PASSWORD", default="dts_test_project"),
+        "HOST": env.str("PG_HOST", default="localhost"),
+        "PORT": env.int("DB_5432_TCP_PORT", default=env.int("PG_PORT", default=5432)),
     }
 }
 
