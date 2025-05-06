@@ -1,3 +1,9 @@
+from django.contrib.staticfiles.finders import (
+    BaseFinder,
+    get_finders,
+    DefaultStorageFinder,
+)
+
 from tenant_schemas.storage import TenantStaticFilesStorage
 from tenant_schemas.test.cases import TenantTestCase
 from tenant_schemas.utils import get_tenant_model, tenant_context
@@ -45,3 +51,18 @@ class TenantStorageTests(TenantTestCase):
         for filename in files:
             with self.subTest(filename=filename), storage.open("foo.txt", "rt") as fp:
                 self.assertEqual(fp.read(), "tenant")
+
+    def test_static_finder(self):
+        found = []
+        for finder in get_finders():
+            finder: BaseFinder
+            for filename, storage in finder.list(None):
+                found.append(filename)
+        self.assertCountEqual(
+            found,
+            [
+                "tenant.test.com/foo.txt",
+                "tenant.test.com/bar.txt",
+                "tenant.test.com/baz.txt",
+            ],
+        )

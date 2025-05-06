@@ -9,9 +9,9 @@ from django.core.files.storage import FileSystemStorage
 from django.contrib.staticfiles.storage import StaticFilesStorage
 
 __all__ = (
-    'TenantStorageMixin',
-    'TenantFileSystemStorage',
-    'TenantStaticFilesStorage',
+    "TenantStorageMixin",
+    "TenantFileSystemStorage",
+    "TenantStaticFilesStorage",
 )
 
 
@@ -30,7 +30,7 @@ class TenantStorageMixin(object):
         domain_url value as the specifier.
         """
         if name is None:
-            name = ''
+            name = ""
         try:
             location = safe_join(self.location, connection.tenant.domain_url)
         except AttributeError:
@@ -38,8 +38,7 @@ class TenantStorageMixin(object):
         try:
             path = safe_join(location, name)
         except ValueError:
-            raise SuspiciousOperation(
-                "Attempted access to '%s' denied." % name)
+            raise SuspiciousOperation("Attempted access to '%s' denied." % name)
         return os.path.normpath(path)
 
 
